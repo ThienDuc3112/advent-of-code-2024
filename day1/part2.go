@@ -10,7 +10,7 @@ import (
 )
 
 func Part2() {
-	file, err := os.ReadFile("./day1/day1.txt")
+	file, err := os.ReadFile("./day1/input")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,8 +37,6 @@ func Part2() {
 		return firstList[i] < firstList[j]
 	})
 
-	// fmt.Println("======== First list ========\n", firstList, "\n")
-	// fmt.Println("======== Second list ========\n", secondList, "\n")
 	res := 0
 	for _, num := range firstList {
 		diff := num * secondList[num]

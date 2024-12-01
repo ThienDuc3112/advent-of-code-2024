@@ -11,7 +11,7 @@ import (
 )
 
 func Part1() {
-	file, err := os.ReadFile("./day1/day1.txt")
+	file, err := os.ReadFile("./day1/input")
 	if err != nil {
 		log.Fatal(err)
 	}
