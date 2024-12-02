@@ -31,7 +31,7 @@ func Part2() {
 			data = append(data, num)
 		}
 
-		valid := checkReportDp(data, 1)
+		valid := checkReportWithDp(data, 1)
 
 		if valid {
 			res++
@@ -40,26 +40,7 @@ func Part2() {
 	fmt.Println(res)
 }
 
-func checkReportDp(data []int, attempt int) bool {
-	valid := checkReport(data)
-	if attempt <= 0 {
-		return valid
-	}
-
-	for i := range data {
-		if valid {
-			break
-		}
-		newData := slices.Concat(data[:i], data[i+1:])
-		valid = valid || checkReportDp(newData, attempt-1)
-	}
-
-	return valid
-}
-
-func checkReport(data []int) bool {
-	increasing := true
-	valid := true
+func checkReportWithDp(data []int, attempt int) bool {
 	for i := range data {
 		if i == 0 {
 			continue
@@ -68,19 +49,32 @@ func checkReport(data []int) bool {
 
 		// Either increasing or decreasing with magnitude < 3
 		if diff == 0 || diff > 3 || diff < -3 {
-			valid = false
-			break
+			if attempt > 0 {
+				rmFirst := checkReportWithDp(removeIndex(data, i), attempt-1)
+				rmSecond := checkReportWithDp(removeIndex(data, i-1), attempt-1)
+				return rmFirst || rmSecond
+			}
+			return false
 		}
 
 		// Check if it consistently increasing or decreasing
-		if i == 1 {
-			increasing = diff > 0
-		} else {
-			valid = (diff > 0) == increasing
-			if !valid {
-				break
+		if i < len(data)-1 {
+			diff2 := data[i+1] - data[i]
+			if (diff > 0) != (diff2 > 0) {
+				if attempt <= 0 {
+					return false
+				}
+				rmFirst := checkReportWithDp(removeIndex(data, i-1), attempt-1)
+				rmSecond := checkReportWithDp(removeIndex(data, i), attempt-1)
+				rmThird := checkReportWithDp(removeIndex(data, i+1), attempt-1)
+				return rmFirst || rmSecond || rmThird
 			}
 		}
 	}
-	return valid
+
+	return true
+}
+
+func removeIndex[T any](data []T, index int) []T {
+	return slices.Concat(data[:index], data[index+1:])
 }
