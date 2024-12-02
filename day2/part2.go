@@ -50,7 +50,7 @@ func checkReportDp(data []int, attempt int) bool {
 		if valid {
 			break
 		}
-		newData := slices.Concat(data[0:i], data[i+1:])
+		newData := slices.Concat(data[:i], data[i+1:])
 		valid = valid || checkReportDp(newData, attempt-1)
 	}
 
